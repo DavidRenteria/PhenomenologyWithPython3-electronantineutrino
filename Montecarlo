@@ -1,0 +1,25 @@
+disAleatoriaX=[]
+disAleatoriaY=[] 
+disBajoLaCurvaX=[]
+disBajoLaCurvaY=[]
+interaction = 50000
+for i in range (interaction):
+    x=180*random.random()
+    y=max(SEpRegresion+0.01)*random.random()
+    if y<=regresion(x):
+        disBajoLaCurvaX.append(x)
+        disBajoLaCurvaY.append(y)
+    else:
+        disAleatoriaX.append(x)
+        disAleatoriaY.append(y)
+
+plt.plot(disBajoLaCurvaX, disBajoLaCurvaY,'r.')
+plt.plot(AngRegresion, SEpRegresion,'r.')
+plt.xlabel('Angle (degrees)')
+plt.ylabel('d$\sigma$/d$\\theta$ (pb/rad)')
+plt.legend(['$\sigma$=5.589 $\pm$ 0.010 pb'])
+plt.show()
+
+
+areaEnMontecarlo=((len(disBajoLaCurvaY))/(len(disBajoLaCurvaY)+len(disAleatoriaY)))*(180*max(SEpRegresion+0.01))*(pi/180)
+areaEnMontecarl
