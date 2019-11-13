@@ -98,9 +98,3 @@ for i in range (interaction):
     else:
         disAleatoriaX.append(x)
         disAleatoriaY.append(y)
-
-plt.plot(disBajoLaCurvaX, disBajoLaCurvaY,'r.')
-plt.xlabel('Angle (degrees)')
-plt.ylabel('d$\sigma$/d$\\theta$ (pb/rad)')
-plt.savefig("MonteCarlo.png",bbox_inches='tight')
-plt.show()
