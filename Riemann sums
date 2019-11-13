@@ -1,0 +1,286 @@
+from math import pi
+import matplotlib.pyplot as plt 
+
+dy1 = lambda s,y1,y2,y3: (s**(-1))*(-(41/10)/(2*pi)-(1/(8*pi**2))*((199/50)/y1+(27/10)/y2+(44/5)/y3))
+dy2 = lambda s,y1,y2,y3: (s**(-1))*(-(-19/6)/(2*pi)-(1/(8*pi**2))*((9/10)/y1+(35/6)/y2+(12)/y3))
+dy3 = lambda s,y1,y2,y3: (s**(-1))*(-(-7)/(2*pi)-(1/(8*pi**2))*((11/10)/y1+(9/2)/y2+(-26)/y3))                               
+
+sqr_s0=91.1876
+sqr_sn=11*sqr_s0
+
+h = 91.1876
+
+y1 = 59.0116
+y2= 29.5874
+y3= 8.4388
+
+n=int((sqr_sn-sqr_s0)/h)
+
+energy = []
+alpha1_inv = [] 
+alpha2_inv = [] 
+alpha3_inv = []
+
+alpha1_inv.append(y1)
+alpha2_inv.append(y2)
+alpha3_inv.append(y3)
+
+s=sqr_s0
+for i in range(n+1):
+    K1 = h*dy1(s, y1,y2,y3)
+    L1 = h*dy2(s, y1,y2,y3)
+    N1 = h*dy3(s, y1,y2,y3)
+
+    K2 = h*dy1(s + h/2, y1 + K1/2,y2 + L1/2,y3 + N1/2)
+    L2 = h*dy2(s + h/2, y1 + K1/2,y2 + L1/2,y3 + N1/2)
+    N2 = h*dy3(s + h/2, y1 + K1/2,y2 + L1/2,y3 + N1/2)
+
+    K3 = h*dy1(s + h/2, y1 + K2/2,y2 + K2/2,y3 + K2/2)
+    L3 = h*dy2(s + h/2, y1 + K2/2,y2 + K2/2,y3 + K2/2)
+    N3 = h*dy3(s + h/2, y1 + K2/2,y2 + K2/2,y3 + K2/2)
+
+    K4 = h*dy1(s +h, y1 + K3,y2 + K3,y3 + K3)
+    L4 = h*dy2(s +h, y1 + K3,y2 + K3,y3 + K3)
+    N4 = h*dy3(s +h, y1 + K3,y2 + K3,y3 + K3)
+
+    y1 += (K1 + 2*K2 + 2*K3 + K4)/6
+    y2 += (L1 + 2*L2 + 2*L3 + L4)/6
+    y3 += (N1 + 2*N2 + 2*N3 + N4)/6
+
+    alpha1_inv.append(y1)
+    alpha2_inv.append(y2)
+    alpha3_inv.append(y3)
+    energy.append(s)
+    s += h
+       
+  
+import numpy as np
+
+ALP1=np.array([[0,0,0,1],
+               [0,0,1,0],
+               [0,1,0,0],
+               [1,0,0,0]])
+ALP2=np.array([[0,0,0,complex(0,-1)],
+               [0,0,complex(0,1),0],
+               [0,complex(0,-1),0,0],
+               [complex(0,1),0,0,0]])
+ALP3=np.array([[0,0,1,0],
+               [0,0,0,-1],
+               [1,0,0,0],
+               [0,-1,0,0]])
+
+GM0=np.array([[1,0,0,0], 
+              [0,1,0,0],
+              [0,0,-1,0],
+              [0,0,0,-1]])
+
+GM1=np.zeros_like(GM0)
+for i in range(len(GM0)):
+    for j in range(len(GM0)):
+        for k in range(len(GM0)):
+            GM1[i,j]+=(GM0[i,k])*(ALP1[k,j]) 
+
+GM2=np.zeros_like(ALP2)
+for i in range(len(GM0)):
+    for j in range(len(GM0)):
+        for k in range(len(GM0)):
+            GM2[i,j]+=(GM0[i,k])*(ALP2[k,j]) 
+
+GM3=np.zeros_like(GM0)
+for i in range(len(GM0)):
+    for j in range(len(GM0)):
+        for k in range(len(GM0)):
+            GM3[i,j]+=(GM0[i,k])*(ALP3[k,j])
+
+x1=np.zeros_like(ALP2)
+x2=np.zeros_like(x1)
+x3=np.zeros_like(x2)
+for i in range(len(GM0)):
+    for j in range(len(GM0)):
+        for k in range(len(GM0)):
+            x1[i,j]+=(GM0[i,k])*(GM1[k,j])
+for i in range(len(GM0)):
+    for j in range(len(GM0)):
+        for k in range(len(GM0)):
+            x2[i,j]+=(x1[i,k])*(GM2[k,j])
+for i in range(len(GM0)):
+    for j in range(len(GM0)):
+        for k in range(len(GM0)):
+            x3[i,j]+=(x2[i,k])*(GM3[k,j])
+GM5=complex(0,1)*x3                         
+
+GM=np.array([GM0,GM1,GM2,GM3])
+
+
+from math import pi,sin,cos,sqrt,acos
+def amplitude(p1,p2,p3,k1,k2,k3,me):
+    p0=(me**2+p1**2+p2**2+p3**2)**0.5
+    k0=(k1**2+k2**2+k3**2)**0.5
+    p_1=p1
+    p_2=p2
+    p_3=p3
+    k_1=k1
+    k_2=k2
+    k_3=k3
+    p_0=p0
+    k_0=k0
+    p=np.array([p0,p1,p2,p3]) 
+    k=np.array([k0,k1,k2,k3]) 
+    k_=np.array([k_0,k_1,k_2,k_3])  
+    p_=np.array([p_0,p_1,p_2,p_3])  
+
+    X=np.zeros_like(GM[2]) 
+    for i in range(1,3+1):
+        x=GM[i]*p[i]
+        X+=x
+        i=i+1
+    ps=GM[0]*p[0]-X     
+
+
+    X=np.zeros_like(GM[2])
+    for i in range(1,3+1):
+        x=GM[i]*k[i]
+        X+=x
+        i=i+1
+    ks=GM[0]*k[0]-X     
+
+    X=np.zeros_like(GM[2])
+    for i in range(1,3+1):
+        x=GM[i]*p_[i]
+        X+=x
+        i=i+1
+    p_s=GM[0]*p_[0]-X   
+
+    X=np.zeros_like(GM[2])
+    for i in range(1,3+1):
+        x=GM[i]*k_[i]
+        X+=x
+        i=i+1
+    k_s=GM[0]*k_[0]-X   
+
+    A=np.identity(4)-GM5  
+    def N1(a,b):
+        N1=((((GM[a]@A)@(ps+me))@GM[b])@A)@ks
+        return N1
+    def N2(a,b):
+        N2=((((GM[a]@A)@k_s)@GM[b])@(A))@(p_s+me)
+        return N2
+
+    tr0=np.trace(N1(0,0))*np.trace(N2(0,0))
+
+    tr1=0
+    for a in range(1,3+1):
+        AI=np.trace(N1(a,0))*np.trace(N2(a,0))
+        tr1+=AI
+
+    tr2=0
+    for b in range(1,3+1):
+        AI=np.trace(N1(0,b))*np.trace(N2(0,b))
+        tr2+=AI
+
+    tr3=0
+    for a in range(1,3+1):
+        for b in range(1,3+1):
+            AI=np.trace(N1(a,b))*np.trace(N2(a,b))
+            tr3+=AI
+
+    sm=tr0-tr1-tr2+tr3
+    amplitude=sm.real   
+    return amplitude
+
+
+import random
+sp=[]
+SEp=[]
+Ang=[]
+n=350
+events=20000
+energy_gap0=energy[7]
+energy_gapn=energy[10]
+me=0.511e-3  
+for i in range(events+1):  
+    p1=random.randint(0,n)
+    p2=random.randint(0,n)
+    p3=random.randint(0,n)
+    k1=random.randint(0,n)
+    k2=random.randint(0,n)
+    k3=random.randint(0,n)
+    p0=(me**2+p1**2+p2**2+p3**2)**0.5
+    k0=(k1**2+k2**2+k3**2)**0.5
+
+    SM = amplitude(p1,p2,p3,k1,k2,k3,me)
+    G = (pi/(alpha2_inv[10]*sqrt(2)*80.387**2))
+    
+    if ((p0+k0)>=energy_gap0):
+        if ((p0+k0)<=energy_gapn):
+
+            sp.append(p0+k0)
+            s=(p0+k0)**2
+            KP=k0*p0-k1*p1-k2*p2-k3*p3
+            CosAnlgle =(k1*p1+k2*p2+k3*p3) / (sqrt(k1**2+k2**2+k3**2)*sqrt(p1**2+p2**2+p3**2))
+            Angle = acos(CosAnlgle)
+
+            dSigma = (2*pi*sin(Angle)) * (G**2*(s-me**2)*SM)/(2*2*pi**2*16*(KP)*2*2*2*s) 
+            SEp.append(dSigma/2.56819e-9)
+            Ang.append(Angle*180/pi)
+
+for i in range(events+1):
+ 
+    p1=random.randint(0,n)
+    p2=random.randint(0,n)
+    p3=random.randint(0,n)
+    k1=-random.randint(0,n)
+    k2=-random.randint(0,n)
+    k3=-random.randint(0,n)
+    p0=(me**2+p1**2+p2**2+p3**2)**0.5
+    k0=(k1**2+k2**2+k3**2)**0.5
+
+    SM = amplitude(p1,p2,p3,k1,k2,k3,me)
+    G = (pi/(alpha2_inv[10]*sqrt(2)*80.387**2))
+    
+    if ((p0+k0)>=energy_gap0):
+        if ((p0+k0)<=energy_gapn):
+
+            sp.append(p0+k0)
+            s=(p0+k0)**2
+            KP=k0*p0-k1*p1-k2*p2-k3*p3
+            CosAnlgle =(k1*p1+k2*p2+k3*p3) / (sqrt(k1**2+k2**2+k3**2)*sqrt(p1**2+p2**2+p3**2))
+            Angle = acos(CosAnlgle)
+
+            dSigma = (2*pi*sin(Angle)) * (G**2*(s-me**2)*SM)/(2*2*pi**2*16*(KP)*2*2*2*s) 
+            SEp.append(dSigma/2.56819e-9)
+            Ang.append(Angle*180/pi)
+
+
+n=50
+vecindad=(180)/n
+nuevoAng=[]
+nuevoSEp=[]
+sumSE=0
+limInf=0
+limSup=vecindad
+for i in range(1,n+1): 
+    altura=[]
+    compararAng=[]
+    contador=0    
+    for i in range(0,len(SEp)):
+        if Ang[i]<=limSup:
+            if Ang[i]>=limInf:
+                compararAng.append(Ang[i])
+                altura.append(SEp[i])
+                contador=contador+1
+    if contador==0:
+        nuevoAng.append(0)
+        nuevoSEp.append(0) 
+    else:
+        for i in range(0,contador):
+            if max(altura)==altura[i]:
+                nuevoAng.append(compararAng[i])
+                nuevoSEp.append(altura[i])
+    limSup+=vecindad
+    limInf+=vecindad
+
+areaBajoLaCurva=0
+for i in range(len(nuevoAng)-1):
+    areaBajoLaCurva=areaBajoLaCurva+(vecindad*pi/180)*nuevoSEp[i+1]
+areaBajoLaCurva
