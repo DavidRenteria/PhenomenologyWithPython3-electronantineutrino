@@ -292,5 +292,5 @@ for i in range (interaction):
         disAleatoriaY.append(y)
 
 
-areaEnMontecarlo=((len(disBajoLaCurvaY))/(len(disBajoLaCurvaY)+len(disAleatoriaY)))*(180*max(SEpRegresion+0.01))*(pi/180)
-areaEnMontecarlo
+areaMontecarlo=((len(disBajoLaCurvaY))/(len(disBajoLaCurvaY)+len(disAleatoriaY)))*(180*max(SEpRegresion+0.01))*(pi/180)
+areaMontecarlo
