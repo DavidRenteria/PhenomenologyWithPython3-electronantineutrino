@@ -1,5 +1,5 @@
 # Particle physics phenomenology with Python 3: electron-antineutrino to electron-antineutrino scattering in the Fermi theory
-These codes in Python 3 are used to calculate the Scattering Cross Section of electron-antineutrino scattering. The file 
+These codes in Python 3 are used to calculate the scattering cross section of electron-antineutrino procces. The file 
 `Montecarlo` is a pseudocode written in Python 3 to make the computation of the Cross Section by means of the Montecarlo method,
 while, the file `Riemann sums` makes the calculation of the same Cross Section by means of the Riemann sums method. Meanwhile, the
 file `Invariant amplitude` is a function, also written in Python 3, used by both methods and corresponds to the calculation of 
@@ -14,7 +14,7 @@ the  *x*, *y* and *z* components with a center of mass energy  lower than 1 TeV.
 for the electron and antineutrino   with angles between 0 and 180 degrees. 
    
 As well  know, the Fermi constant is depending of coupling constant, witch  we saw in equation (15),  this mean that the Fermi 
-constant varies respect to energy of center mass system. For resolve the group renormalization equations (file `RGE's` )the 
+constant varies respect to energy of center mass system. For resolve the group renormalization equations (file `RGE's` ) the 
 first pas is solve the differential equations (17),  in order to adjusted  *G_F* to process's energy. 
 The method used to solve the system of differential equations in Phyton is Runge-Kutta 4. 
 
@@ -22,8 +22,8 @@ The next step is computing the `Invariant amplitude`  with help of equation (31)
 (31), we have programmed the *gamma* matrices of equation (9) and *gamma_5* as shown in the 
 table 2. 
 
-Once the *gamma_i* and *gamma_5* matrices have been computed, we define the following function to calculate the invariant
-amplitude average.Once we have obtained the invariant amplitude average, we calculate the cross section distribution 
+Once the *gamma_i* and *gamma_5* matrices have been computed, we create a  function to calculate the invariant
+amplitude average. Once we have obtained the invariant amplitude average, we calculate the cross section distribution 
 
 In the corss secction distribution (file `Differential cross 
 section`) we generate events for energy processes from 
