@@ -34,7 +34,7 @@ conservation. The integral of equation (30) has not been calculated with Python 
 
 Computing the cross section with Riemann sums method, we obtained a total cross section
 of  5748.573±1613  pb,  while  by  using  the  Montecarlo  method,  we  find  that  the  total  cross  section
-is 5581.881±100 pb.  In order to compare the tworesults,  we  scan  the  total  cross  section  from  0  to  1
+is 5581.881±100 pb.  In order to compare the two results,  we  scan  the  total  cross  section  from  0  to  1
 TeV by using Mathematica; the prediction resultingis 5577.178 pb. This implies that the method by sums Riemann gives an error of calculation of 2.98% while the method Monte Carlo gives an error of 0.08%
 
 
