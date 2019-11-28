@@ -12,7 +12,7 @@ The next step consists in computing the `Invariant amplitude`  with the help of 
 Once the *gamma_i* and *gamma_5* matrices have been computed, we create a function to calculate the invariant amplitude averaged over spins. Therefore, we are now able to calculate the cross section distribution.
 
 In order to compute the differential cross section (file `Differential cross 
-section`), we generate events for energy processes from 0 GeV to 1000 GeV and we computed the Fermi constant  *G_F*to the energy of the event. The events have been conditioned in order to fulfill momentum conservation. Equation (30) has not been computed directly with Python 3, but with the help of equation (34) instead.
+section`), we generate events for energy processes from 0 GeV to 1000 GeV and we computed the Fermi constant  *G_F* to the energy of the event. The events have been conditioned in order to fulfill momentum conservation. Equation (30) has not been computed directly with Python 3, but with the help of equation (34) instead.
 
 
 ## Montecarlo
