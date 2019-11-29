@@ -1,7 +1,7 @@
 # Particle physics phenomenology with Python 3: electron-antineutrino to electron-antineutrino scattering in the Fermi theory
 These codes in Python 3 are used to calculate the scattering cross section of electron-antineutrino process. The file
 `Montecarlo`  is a pseudocode written in Python 3 to make the computation of the Cross Section by means of the Montecarlo method, while, the file `Riemann sums` makes the calculation of the same Cross Section by means of the Riemann sums method. Meanwhile, the file `Invariant amplitude` is a function, also written in Python 3, used by both methods and it corresponds to the calculation of the squared modulus of the invariant amplitude of scattering for the electron-antineutrino process. Finally, in the `Modules` 
-folder, we find the pseudocodes `Differential cross section`, `RGE's` and `Invariant amplitude`  uwhich are used to compute and plot the differential cross section, to solve the renormalization group equations and to obtain the matrix element of the process, respectively. These last files are employed by the Monte Carlo method and Riemann sums.
+folder, we find the pseudocodes `Differential cross section`, `RGE's` and `Invariant amplitude`  which are used to compute and plot the differential cross section, to solve the renormalization group equations and to obtain the matrix element of the process, respectively. These last files are employed by the Monte Carlo method and Riemann sums.
 ## Review
 The general idea is compute the equation (30) numerically through the generation of random momenta in the x, y and z components with a center of mass energy lower than 1 TeV. In this way, we build a set of random four vectors for the electron and antineutrino with angles between 0 and 180 degrees.
 
