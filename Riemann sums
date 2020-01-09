@@ -1,30 +1,44 @@
-from math import pi
+#####################################################################################################
+'''                                import the bookstores you need                                 '''
+#####################################################################################################
+from math import pi,sin,cos,sqrt,acos 
+from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt 
-
+import numpy as np
+import random
+#####################################################################################################
+'''                            solve the differential equations: RGE                              '''
+#####################################################################################################
+#we define differential equations to be solved
 dy1 = lambda s,y1,y2,y3: (s**(-1))*(-(41/10)/(2*pi)-(1/(8*pi**2))*((199/50)/y1+(27/10)/y2+(44/5)/y3))
 dy2 = lambda s,y1,y2,y3: (s**(-1))*(-(-19/6)/(2*pi)-(1/(8*pi**2))*((9/10)/y1+(35/6)/y2+(12)/y3))
 dy3 = lambda s,y1,y2,y3: (s**(-1))*(-(-7)/(2*pi)-(1/(8*pi**2))*((11/10)/y1+(9/2)/y2+(-26)/y3))                               
 
-sqr_s0=91.1876
-sqr_sn=11*sqr_s0
+sqr_s0=91.1876  #initial energy 
+sqr_sn=11*sqr_s0  #final energy
 
-h = 91.1876
+h = 91.1876  #step
 
-y1 = 59.0116
+y1 = 59.0116 #initial conditions
 y2= 29.5874
 y3= 8.4388
 
-n=int((sqr_sn-sqr_s0)/h)
+n=int((sqr_sn-sqr_s0)/h) #step number
 
-energy = []
+#make arrangements 
+energy = [] 
 alpha1_inv = [] 
 alpha2_inv = [] 
-alpha3_inv = []
+alpha3_inv = [] 
 
 alpha1_inv.append(y1)
 alpha2_inv.append(y2)
 alpha3_inv.append(y3)
 
+
+"""
+Solving differential equations by the Runge-Kutta 4 method
+"""
 s=sqr_s0
 for i in range(n+1):
     K1 = h*dy1(s, y1,y2,y3)
@@ -50,13 +64,20 @@ for i in range(n+1):
     alpha1_inv.append(y1)
     alpha2_inv.append(y2)
     alpha3_inv.append(y3)
-    energy.append(s)
+    energy.append(s)      #save the mass center energy in an vector
     s += h
-       
-  
-import numpy as np
+#####################################################################################################    
+'''                                computed the Dirac matrices                                    '''
+#####################################################################################################
+"""
+As an exercise, we have calculated the Dirac matrices 
+by defining equation 9. 
 
-ALP1=np.array([[0,0,0,1],
+This part of the code can be omitted and the Dirac matrices 
+can be defined in an array.
+"""
+
+ALP1=np.array([[0,0,0,1],    #define alpha matrices
                [0,0,1,0],
                [0,1,0,0],
                [1,0,0,0]])
@@ -78,19 +99,19 @@ GM1=np.zeros_like(GM0)
 for i in range(len(GM0)):
     for j in range(len(GM0)):
         for k in range(len(GM0)):
-            GM1[i,j]+=(GM0[i,k])*(ALP1[k,j]) 
+            GM1[i,j]+=(GM0[i,k])*(ALP1[k,j]) #gamma 1
 
 GM2=np.zeros_like(ALP2)
 for i in range(len(GM0)):
     for j in range(len(GM0)):
         for k in range(len(GM0)):
-            GM2[i,j]+=(GM0[i,k])*(ALP2[k,j]) 
+            GM2[i,j]+=(GM0[i,k])*(ALP2[k,j]) #gamma 2
 
 GM3=np.zeros_like(GM0)
 for i in range(len(GM0)):
     for j in range(len(GM0)):
         for k in range(len(GM0)):
-            GM3[i,j]+=(GM0[i,k])*(ALP3[k,j])
+            GM3[i,j]+=(GM0[i,k])*(ALP3[k,j]) #gamma 3
 
 x1=np.zeros_like(ALP2)
 x2=np.zeros_like(x1)
@@ -107,16 +128,27 @@ for i in range(len(GM0)):
     for j in range(len(GM0)):
         for k in range(len(GM0)):
             x3[i,j]+=(x2[i,k])*(GM3[k,j])
-GM5=complex(0,1)*x3                         
+GM5=complex(0,1)*x3                       #gamma 5  
 
-GM=np.array([GM0,GM1,GM2,GM3])
-
-
-from math import pi,sin,cos,sqrt,acos
-def amplitude(p1,p2,p3,k1,k2,k3,me):
-    p0=(me**2+p1**2+p2**2+p3**2)**0.5
+GM=np.array([GM0,GM1,GM2,GM3]) #save the gamma arrays in an array
+#####################################################################################################
+'''                    Create a function that computes the invariant amplitude                    '''
+#####################################################################################################
+"""
+(p0,p1,p2,p3) is a four-vector of the electron  incoming 
+(p_0,p_1,p_2,p_3) is a four-vector of the electron outgoing
+(k0,k1,k2,k3) is a four-vector of the electron anti-neutrino incoming
+(k_0,k_1,k_2,k_3) is a four-vector of the electron anti-neutrino outgoing
+me is the electron mass 
+ps is the p-slash matrix 
+ks is the k-slash matrix
+p_s is the p'-slash matrix 
+k_s is the k'-slash matrix
+"""
+def amplitude(p1,p2,p3,k1,k2,k3,me): #invariant amplitude function 
+    p0=(me**2+p1**2+p2**2+p3**2)**0.5 #energy in natural units 
     k0=(k1**2+k2**2+k3**2)**0.5
-    p_1=p1
+    p_1=p1                           #use energy conservation
     p_2=p2
     p_3=p3
     k_1=k1
@@ -124,43 +156,44 @@ def amplitude(p1,p2,p3,k1,k2,k3,me):
     k_3=k3
     p_0=p0
     k_0=k0
-    p=np.array([p0,p1,p2,p3]) 
+    p=np.array([p0,p1,p2,p3]) #save in a array
     k=np.array([k0,k1,k2,k3]) 
     k_=np.array([k_0,k_1,k_2,k_3])  
     p_=np.array([p_0,p_1,p_2,p_3])  
-
-    X=np.zeros_like(GM[2]) 
+    
+    X=np.zeros_like(GM[2])  #computed p-slash
     for i in range(1,3+1):
         x=GM[i]*p[i]
         X+=x
         i=i+1
     ps=GM[0]*p[0]-X     
 
-
-    X=np.zeros_like(GM[2])
+    X=np.zeros_like(GM[2])  #computed k-slash
     for i in range(1,3+1):
         x=GM[i]*k[i]
         X+=x
         i=i+1
     ks=GM[0]*k[0]-X     
 
-    X=np.zeros_like(GM[2])
+    X=np.zeros_like(GM[2])  #computed p'-slash
     for i in range(1,3+1):
         x=GM[i]*p_[i]
         X+=x
         i=i+1
     p_s=GM[0]*p_[0]-X   
 
-    X=np.zeros_like(GM[2])
+    X=np.zeros_like(GM[2]) #computed k'-slash
     for i in range(1,3+1):
         x=GM[i]*k_[i]
         X+=x
         i=i+1
     k_s=GM[0]*k_[0]-X   
 
-    A=np.identity(4)-GM5  
+    A=np.identity(4)-GM5  #1-gamma5
+    
+    #in the next part, we calculated the traces for resolve the invariant amplitude
     def N1(a,b):
-        N1=((((GM[a]@A)@(ps+me))@GM[b])@A)@ks
+        N1=((((GM[a]@A)@(ps+me))@GM[b])@A)@ks 
         return N1
     def N2(a,b):
         N2=((((GM[a]@A)@k_s)@GM[b])@(A))@(p_s+me)
@@ -185,21 +218,26 @@ def amplitude(p1,p2,p3,k1,k2,k3,me):
             tr3+=AI
 
     sm=tr0-tr1-tr2+tr3
-    amplitude=sm.real   
+    amplitude=sm.real   #take the real part, the imagine part is zero
     return amplitude
+#####################################################################################################
+'''                           calculated the differential cross section                           '''
+#####################################################################################################
+"""
+Generates random moments at an energy between 820.68 and 1003.06 Gev
+and resolve the differential cross section numerically
+"""
+sp=[]  #mass center energy
+SEp=[] #differential cross section 
+Ang=[] #dispertion angle 
+n=360  #random number control 
+events=20000           #events
+energy_gap0=energy[8]  #820.68 Gev
+energy_gapn=energy[10] #1003.06 Gev
+me=0.511e-3            #mass electron 
 
-
-import random
-sp=[]
-SEp=[]
-Ang=[]
-n=350
-events=20000
-energy_gap0=energy[7]
-energy_gapn=energy[10]
-me=0.511e-3  
-for i in range(events+1):  
-    p1=random.randint(0,n)
+for i in range(events+1):  #cycle for an angle between 0 to 90 degree
+    p1=random.randint(0,n) #generate random momentum 
     p2=random.randint(0,n)
     p3=random.randint(0,n)
     k1=random.randint(0,n)
@@ -208,24 +246,23 @@ for i in range(events+1):
     p0=(me**2+p1**2+p2**2+p3**2)**0.5
     k0=(k1**2+k2**2+k3**2)**0.5
 
-    SM = amplitude(p1,p2,p3,k1,k2,k3,me)
-    G = (pi/(alpha2_inv[10]*sqrt(2)*80.387**2))
+    SM = amplitude(p1,p2,p3,k1,k2,k3,me)        #invariant amplitude 
+    G = (pi/(alpha2_inv[10]*sqrt(2)*80.387**2)) #Fermi constant
     
-    if ((p0+k0)>=energy_gap0):
+    if ((p0+k0)>=energy_gap0):      #filter energy between 820.68 and 1003.06 Gev
         if ((p0+k0)<=energy_gapn):
 
             sp.append(p0+k0)
             s=(p0+k0)**2
-            KP=k0*p0-k1*p1-k2*p2-k3*p3
+            KP=k0*p0-k1*p1-k2*p2-k3*p3   
             CosAnlgle =(k1*p1+k2*p2+k3*p3) / (sqrt(k1**2+k2**2+k3**2)*sqrt(p1**2+p2**2+p3**2))
-            Angle = acos(CosAnlgle)
-
+            Angle = acos(CosAnlgle)        #dispertion angle 
+            #differential cross section 
             dSigma = (2*pi*sin(Angle)) * (G**2*(s-me**2)*SM)/(2*2*pi**2*16*(KP)*2*2*2*s) 
             SEp.append(dSigma/2.56819e-9)
             Ang.append(Angle*180/pi)
 
-for i in range(events+1):
- 
+for i in range(events+1):  #cycle for an angle between 90 to 180 degree
     p1=random.randint(0,n)
     p2=random.randint(0,n)
     p3=random.randint(0,n)
@@ -250,37 +287,52 @@ for i in range(events+1):
             dSigma = (2*pi*sin(Angle)) * (G**2*(s-me**2)*SM)/(2*2*pi**2*16*(KP)*2*2*2*s) 
             SEp.append(dSigma/2.56819e-9)
             Ang.append(Angle*180/pi)
-
-
-n=50
-vecindad=(180)/n
-nuevoAng=[]
-nuevoSEp=[]
+#####################################################################################################
+'''                   Calculate total cross section by Riemann sums method                        '''
+#####################################################################################################
+"""
+we make 50 equal intervals of dispersion,
+and choose the maximum point of each interval,
+the area is adding the area generated by
+the height of the maximum points multiplied by the
+interval width
+"""
+n=50        #number of intervals
+gap=(180)/n #interval width
+newAng=[]   #maximum point angle
+newSEp=[]   #maximum point
 sumSE=0
-limInf=0
-limSup=vecindad
-for i in range(1,n+1): 
-    altura=[]
-    compararAng=[]
-    contador=0    
-    for i in range(0,len(SEp)):
-        if Ang[i]<=limSup:
-            if Ang[i]>=limInf:
-                compararAng.append(Ang[i])
-                altura.append(SEp[i])
-                contador=contador+1
-    if contador==0:
-        nuevoAng.append(0)
-        nuevoSEp.append(0) 
-    else:
-        for i in range(0,contador):
-            if max(altura)==altura[i]:
-                nuevoAng.append(compararAng[i])
-                nuevoSEp.append(altura[i])
-    limSup+=vecindad
-    limInf+=vecindad
+Lower_limit=0
+Upper_limit=gap
 
-areaBajoLaCurva=0
-for i in range(len(nuevoAng)-1):
-    areaBajoLaCurva=areaBajoLaCurva+(vecindad*pi/180)*nuevoSEp[i+1]
-areaBajoLaCurva
+"""
+we compare all the points and save in the new vectors the points
+where the effective section is max in each interval created
+"""
+for i in range(1,n+1): 
+    height=[]
+    compareAng=[]
+    counter=0    
+    for i in range(0,len(SEp)):
+        if Ang[i]<=Upper_limit:
+            if Ang[i]>=Lower_limit:
+                compareAng.append(Ang[i])
+                height.append(SEp[i])
+                counter=counter+1
+    if counter==0:
+        newAng.append(0)
+        newSEp.append(0) 
+    else:
+        for i in range(0,counter):
+            if max(height)==height[i]:
+                newAng.append(compareAng[i])
+                newSEp.append(height[i])
+    Upper_limit+=gap
+    Lower_limit+=gap
+"""
+we add all the areas
+"""
+area_Riemann_sums=0
+for i in range(len(newAng)-1):
+    area_Riemann_sums=area_Riemann_sums+(gap*pi/180)*newSEp[i+1]
+area_Riemann_sums #total cross section
